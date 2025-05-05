@@ -18,6 +18,7 @@ type slackTypeNotifier struct {
 	HookURL   string
 	Username  string
 	Channel   string
+	ThreadID  string
 	IconEmoji string
 	IconURL   string
 }
@@ -28,6 +29,7 @@ func newSlackNotifier(c *cobra.Command) t.ConvertibleNotifier {
 	hookURL, _ := flags.GetString("notification-slack-hook-url")
 	userName, _ := flags.GetString("notification-slack-identifier")
 	channel, _ := flags.GetString("notification-slack-channel")
+	threadID, _ := flags.GetString("notification-slack-thread-id")
 	emoji, _ := flags.GetString("notification-slack-icon-emoji")
 	iconURL, _ := flags.GetString("notification-slack-icon-url")
 
@@ -35,6 +37,7 @@ func newSlackNotifier(c *cobra.Command) t.ConvertibleNotifier {
 		HookURL:   hookURL,
 		Username:  userName,
 		Channel:   channel,
+		ThreadID:  threadID,
 		IconEmoji: emoji,
 		IconURL:   iconURL,
 	}
@@ -58,6 +61,10 @@ func (s *slackTypeNotifier) GetURL(c *cobra.Command) (string, error) {
 
 		if s.IconURL != "" {
 			conf.Avatar = s.IconURL
+		}
+
+		if s.ThreadID != "" {
+			conf.ThreadID = s.ThreadID
 		}
 
 		return conf.GetURL().String(), nil

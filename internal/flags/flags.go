@@ -314,6 +314,12 @@ Should only be used for testing.`)
 		"A string which overrides the webhook's default channel. Example: #my-custom-channel")
 
 	flags.StringP(
+		"notification-slack-thread-id",
+		"",
+		envString("WATCHTOWER_NOTIFICATION_SLACK_THREAD"),
+		"A string which overrides the webhook's default thread.")
+
+	flags.StringP(
 		"notification-slack-icon-emoji",
 		"",
 		envString("WATCHTOWER_NOTIFICATION_SLACK_ICON_EMOJI"),

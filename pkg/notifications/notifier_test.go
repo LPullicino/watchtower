@@ -147,6 +147,7 @@ var _ = Describe("notifications", func() {
 			token := "abvsihdbau"
 			color := notifications.ColorInt
 			username := "containrrrbot"
+			threadID := "987654321"
 			iconURL := "https://containrrr.dev/watchtower-sq180.png"
 			expected := fmt.Sprintf("discord://%s@%s?color=0x%x&colordebug=0x0&colorerror=0x0&colorinfo=0x0&colorwarn=0x0&username=watchtower", token, channel, color)
 			buildArgs := func(url string) []string {
@@ -185,6 +186,26 @@ var _ = Describe("notifications", func() {
 					}
 
 					testURL(args, expectedOutput, expectedDelay)
+				})
+			})
+			When("a thread is specified", func() {
+				It("should return the expected URL", func() {
+					hookURL := fmt.Sprintf("https://%s/api/webhooks/%s/%s/slack", "discord.com", channel, token)
+					expectedOutput := fmt.Sprintf("discord://%s@%s?avatar=%s&color=0x%x&colordebug=0x0&colorerror=0x0&colorinfo=0x0&colorwarn=0x0&thread_id=%s&username=%s", token, channel, url.QueryEscape(iconURL), color, threadID, username)
+					args := []string{
+						"--notifications",
+						"slack",
+						"--notification-slack-hook-url",
+						hookURL,
+						"--notification-slack-identifier",
+						username,
+						"--notification-slack-icon-url",
+						iconURL,
+						"--notification-slack-thread-id",
+						threadID,
+					}
+
+					testURL(args, expectedOutput, time.Duration(0))
 				})
 			})
 		})

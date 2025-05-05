@@ -336,6 +336,7 @@ By default, watchtower will send messages under the name `watchtower`, you can c
 Other, optional, variables include:
 
 -   `--notification-slack-channel` (env. `WATCHTOWER_NOTIFICATION_SLACK_CHANNEL`): A string which overrides the webhook's default channel. Example: #my-custom-channel.
+-   `--notification-slack-thread-id` (env. `WATCHTOWER_NOTIFICATION_SLACK_THREAD`): A string which overrides the webhook's default thread.
 
 Example:
 
