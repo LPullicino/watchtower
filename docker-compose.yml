@@ -10,7 +10,33 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - 8080:8080
-    command: --interval 10 --http-api-metrics --http-api-token demotoken --debug prometheus grafana parent child
+#    command: notify-upgrade --interval 10 --http-api-metrics --http-api-token demotoken --debug prometheus grafana parent child --notifications slack --notification-slack-hook-url "https://discord.com/api/webhooks/1351640524947325090/HpEK0NKEjoBCLgrwI5uvRy5pn8Vqdo4mqP0Suq-F2R4jf_wQXr7-1574K74igH9Jlvwv/slack" --notification-slack-thread-id "1351640673526354040"
+    command: --interval 10 --http-api-metrics --http-api-token demotoken --debug prometheus grafana parent child --notifications slack --notification-slack-hook-url "https://discord.com/api/webhooks/1351640524947325090/HpEK0NKEjoBCLgrwI5uvRy5pn8Vqdo4mqP0Suq-F2R4jf_wQXr7-1574K74igH9Jlvwv/slack" --notification-slack-thread-id "1351640673526354040"
+    environment:
+      WATCHTOWER_NOTIFICATION_REPORT: "true"
+      WATCHTOWER_NOTIFICATION_URL: "discord://HpEK0NKEjoBCLgrwI5uvRy5pn8Vqdo4mqP0Suq-F2R4jf_wQXr7-1574K74igH9Jlvwv@1351640524947325090?thread_id=1351640673526354040"
+#      WATCHTOWER_NOTIFICATIONS: slack
+#      WATCHTOWER_NOTIFICATION_URL: "discord://HpEK0NKEjoBCLgrwI5uvRy5pn8Vqdo4mqP0Suq-F2R4jf_wQXr7-1574K74igH9Jlvwv@1351640524947325090"
+#      WATCHTOWER_NOTIFICATION_SLACK_THREAD: "1351640673526354040"
+      WATCHTOWER_NOTIFICATION_TEMPLATE: " {{- if .Report -}}
+                                            {{- with .Report -}}
+                                          {{len .Scanned}} Scanned, {{len .Updated}} Updated, {{len .Failed}} Failed
+                                                {{- range .Updated}}
+                                          - {{.Name}} ({{.ImageName}}): {{.CurrentImageID.ShortID}} updated to {{.LatestImageID.ShortID}}
+                                                {{- end -}}
+                                                {{- range .Fresh}}
+                                          - {{.Name}} ({{.ImageName}}): {{.State}}
+                                              {{- end -}}
+                                              {{- range .Skipped}}
+                                          - {{.Name}} ({{.ImageName}}): {{.State}}: {{.Error}}
+                                              {{- end -}}
+                                              {{- range .Failed}}
+                                          - {{.Name}} ({{.ImageName}}): {{.State}}: {{.Error}}
+                                              {{- end -}}
+                                            {{- end -}}
+                                          {{- else -}}
+                                            {{range .Entries -}}{{.Message}}{{\"\n\"}}{{- end -}}
+                                          {{- end -}}"
   prometheus:
     container_name: prometheus
     image: prom/prometheus
